@@ -1,6 +1,8 @@
 package com.beans;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,6 +31,16 @@ public class UserBeans {
         User user = new User();
         user.setId(2);
         user.setName("Bond");
+        return user;
+    }
+
+    @Bean(name = "user3")
+    // @Scope("prototype") // 每次请求，生产一个新对象
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public User getUser3() {
+        User user = new User();
+        user.setId(1);
+        user.setName("Java");
         return user;
     }
 }
