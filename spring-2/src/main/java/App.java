@@ -9,11 +9,22 @@ import sun.rmi.server.UnicastServerRef;
  * @since 7-3-2022
  * @spring annotation: https://www.geeksforgeeks.org/difference-between-component-repository-service-and-controller-annotations-in-spring/
  *
+ * attribute injection, constructor injection, and setter injection:
+ * https://laurspilca.com/comparison-field-constructor-setter-injection/
+ * @Resource vs @Autowired
  */
 public class App {
     public static void main(String[] args) {
         // 1. 先得到上下文对象
         ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
+        //构造方法的注入
+/*        UserController3 userController3 = context.getBean(UserController3.class);
+        userController3.sayHi();*/
+
+        // 用setter来注入
+        UserController4 userController4 = context.getBean(UserController4.class);
+        userController4.sayHi();
+
 /*        // 2. getBean, 命名规则：因为没有Bean id了，所以用小驼峰的class name
         UserController controller = context.getBean("userController",UserController.class);
         // 3. use bean
@@ -40,7 +51,14 @@ public class App {
         User user = context.getBean("user1", User.class);*/
        /* No qualifying bean of type 'com.beans.User' available
         User user = context.getBean(User.class);*/
-        User user = context.getBean("user1", User.class);
-        System.out.println(user);
+/*        User user = context.getBean("userinfo", User.class);
+        System.out.println(user);*/
+
+        //调用userController
+/*        UserController controller = context.getBean(UserController.class);
+        controller.sayHi();*/
+
+
+
     }
 }
