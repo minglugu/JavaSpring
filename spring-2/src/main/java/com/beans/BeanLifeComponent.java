@@ -8,6 +8,7 @@ import javax.annotation.PreDestroy;
 /**
  * @author Minglu Gu
  * @version 1.0
+ * @ 更换成IDEA community 2020.3
  */
 //@Component 因为@Component和xml文件里同时注入了bean，所以把这行comment掉，就出现一次执行的结果了。
 public class BeanLifeComponent implements BeanNameAware {
