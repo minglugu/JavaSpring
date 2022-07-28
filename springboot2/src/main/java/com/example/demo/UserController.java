@@ -1,7 +1,6 @@
 package com.example.demo;
 
 import com.example.demo.model.ReadList;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import com.example.demo.model.Student;
@@ -13,6 +12,9 @@ import javax.annotation.Resource;
 
 @Controller
 public class UserController {
+    // 日志 logging: https://www.baeldung.com/spring-boot-logging
+
+
 
     // 读取配置项，server port的value
     @Value("${myyml.string}")

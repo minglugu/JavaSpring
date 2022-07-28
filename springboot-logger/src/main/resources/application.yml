@@ -1,0 +1,7 @@
+#可以设置日志的大小
+logging:
+  logback:
+  rollingpolicy:
+    max-file-size:
+      10MB
+
