@@ -31,6 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-/src/main/java/com/example/demo/DemoApplication.java
-/src/main/resources/application.properties
-/pom.xml
