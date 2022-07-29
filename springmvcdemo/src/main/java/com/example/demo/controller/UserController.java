@@ -50,9 +50,10 @@ public class UserController {
         return userInfo;
     }
 
-    // name 是前端传来的名称，重命名。当写了@RequestParam，必须要传name这个参数的值
+    // name 是前端传来的名称，重命名。当写了@RequestParam，必须要传name这个参数的值,因为默认的是required=true。
+    // 如果不想传name这个参数，那么将required = false
     @RequestMapping("/login")
-    public String login(@RequestParam("name") String username, String password) {
+    public String login(@RequestParam(value = "name", required = false) String username, String password) {
 /*        //默认登录失败.
         boolean result = false;
         // 伪代码：如果用户名和密码都是admin，那么就登录成功了*/

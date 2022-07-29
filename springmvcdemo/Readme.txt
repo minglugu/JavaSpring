@@ -33,3 +33,6 @@ Spring MVC 学习目标
     前端传递的参数key和我们后端接受的key可以不一致，比如前端传递了一个time给后端，而后端是由createtime字段来接受的。这样就会出现参数接受不到的
     情况。如果出现这种情况，我们就可以使用@RequestParam来重命名前后端的参数值
 
+    @RequestParam 注意事项：
+    如果在参数中添加 此注解，那么前端一定要传递此参数，否则就会报错。如果想要解决此问题，可以给@RequestParam里面
+    添加 required = false 
