@@ -35,4 +35,23 @@ Spring MVC 学习目标
 
     @RequestParam 注意事项：
     如果在参数中添加 此注解，那么前端一定要传递此参数，否则就会报错。如果想要解决此问题，可以给@RequestParam里面
-    添加 required = false 
+    添加 required = false
+
+4. 接受JSON格式的数据
+    使用Postman模拟发送JSON数据给服务器
+
+    接受普通的请求方式（e.g. 表单格式）,不能接受JSON格式
+    服务器端，实现JSON数据的接受，需要使用@RequestBody
+    接受JSON对象，需要用到@RequestBody
+
+5   获取URL中参数 @PathVariable
+    （不是从URL地址中的参数部分获取参数）
+    e.g. http(s)://xxxx?yyyy        参数经常会变
+                   xxxx: url 地址
+                   yyyy: 参数部分
+
+    如果是写成这样的url地址，http://dota2.uuu9.com/66/影魔/    66是id，影魔名字
+    为什么这么写？SEO优先级比较高。因为SEO（search engine optimization）的效果更好，把参数伪装成url地址了，url变动性比较少
+
+
+6   使用postman来上传文件

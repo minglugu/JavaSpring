@@ -1,9 +1,15 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.UserInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+
+@Slf4j
 @Controller
 @RequestMapping("/user") // 类上面的RequestingMapping 可以省略
 @ResponseBody
@@ -60,12 +66,36 @@ public class UserController {
         return "用户名： " + username + " | 密码：" + password;
     }
 
-    // 多个参数，获取对象,这个业务类就无需调整参数。参数再UserInfo里面调整
+    // 很多个参数，获取对象,这个业务类就无需调整参数。参数再UserInfo里面调整
     // 根据获取的参数的属性，来填写信息后输出。
     // 前端的话，在url里面，填写属性的内容就可以
+    // 注册的业务
     @RequestMapping("/reg")
-    public String reg(UserInfo userInfo) {
+    public String reg(@RequestBody UserInfo userInfo) {
         return "用户信息：" + userInfo;
+    }
+
+    // 从URL路径里面获取参数@PathVariable，参数用{参数名}
+    // 将参数写成url的格式，是用来增加SEO的优先级的
+    @RequestMapping("/hero/{id}/{name}")
+    public String getHeroInfo(@PathVariable Integer id, @PathVariable String name) {
+        return "ID: " + id + " | Name: " + name;
+    }
+
+    // 上传文件和图片，数据流
+    // 在方法中的某个参数上，加@RequestPart
+    // file.transferTo(new File(filePath)), 接受的这个file，这个流会放到哪个文件下
+    @RequestMapping("/upimg")
+    public boolean upImg(Integer uid, @RequestPart("img") MultipartFile file) {
+        boolean result = false;
+        // 保存图片到本地目录（此处本地电脑既是客户端又是服务器）
+        try {
+            file.transferTo(new File("C:\\Users\\LuLu\\bit_github\\Java\\JavaSpring\\springmvcdemo\\img.png"));
+            result = true;
+        } catch (IOException e) {
+            log.error("上传图片失败。" + e.getMessage());
+        }
+        return result;
     }
 
 }
