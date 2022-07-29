@@ -21,3 +21,7 @@ Spring MVC 学习目标
 
 路由映射：当用户访问一个url时，将用户的请求对应到程序中某个类的某个方法的过程。
 
+2. 实现用户参数的获取，因为用户请求比较多，所以类型比较多。
+    2.1 获取单个参数,见UserInfo getuserbyid(Integer id)
+    2.2 获取多个参数，见login(String username, String password)
+
