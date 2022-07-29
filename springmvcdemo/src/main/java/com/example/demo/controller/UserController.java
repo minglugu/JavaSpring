@@ -50,11 +50,21 @@ public class UserController {
         return userInfo;
     }
 
+    // name 是前端传来的名称，重命名。当写了@RequestParam，必须要传name这个参数的值
     @RequestMapping("/login")
-    public String login(String username, String password) {
+    public String login(@RequestParam("name") String username, String password) {
 /*        //默认登录失败.
         boolean result = false;
         // 伪代码：如果用户名和密码都是admin，那么就登录成功了*/
         return "用户名： " + username + " | 密码：" + password;
     }
+
+    // 多个参数，获取对象,这个业务类就无需调整参数。参数再UserInfo里面调整
+    // 根据获取的参数的属性，来填写信息后输出。
+    // 前端的话，在url里面，填写属性的内容就可以
+    @RequestMapping("/reg")
+    public String reg(UserInfo userInfo) {
+        return "用户信息：" + userInfo;
+    }
+
 }
