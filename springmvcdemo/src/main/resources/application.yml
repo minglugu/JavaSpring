@@ -1,0 +1,12 @@
+# 配置项，链接application-prod 和application-dev
+# 设置配置文件的运行平台
+# dev为开发环境，因为指定了是dev文件，所以用@Value取值dev里面的文件，就会在页面，显示路径名
+# active: 当前按此项目，活跃的平台是什么。e.g. 是dev，或是prod
+
+#在本文件中，没有配置C:盘的路径信息，该信息是配置在dev里面的。
+#不同的环境，只在active: 这个信息里面改
+
+# 基类文件，保存相同的东西
+spring:
+  profiles:
+    active: prod

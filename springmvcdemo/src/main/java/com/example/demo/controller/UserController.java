@@ -2,24 +2,97 @@ package com.example.demo.controller;
 
 import com.example.demo.model.UserInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 @Slf4j
 @Controller
 @RequestMapping("/user") // 类上面的RequestingMapping 可以省略
 @ResponseBody
 public class UserController {
+    // 从配置文件的读取图片（img file）的保存路径,见application-prod.yml
+    @Value("${img.path}")
+    // 赋值给一个变量
+    private String imgPath;
+
+    @RequestMapping("/setsession")
+    public boolean setSession(HttpServletRequest request) {
+        boolean result = false;
+        // 1. 得到HttpSession
+        HttpSession httpSession = request.getSession(true); // true:如果没有会话，那么创建一个。就不用判断null
+                                                                // false：有的话，就会用，如果没有会话，不会创建。
+        // 2. 使用setAtt，设置值
+
+        httpSession.setAttribute("userInfo", "张三");
+        result = true;
+        return result;
+    }
+
+    //用Servlet来获取
+    @RequestMapping("/getsession")
+    public String getSession(HttpServletRequest request) {
+        String result = null;
+        // 1. 得到HttpSession对象
+        HttpSession session = request.getSession(false); // false如果有会话，使用会话，没有，就不创建新的会话
+        // 2. getAtt得到Session信息
+        if(session!=null && session.getAttribute("userInfo") != null) {
+            result = (String) session.getAttribute("userInfo");
+        }
+        return result;
+    }
+
+    // 用@SessionAttribute
+    // @SessionAttribute中的boolean required() default true; 手动设置成false
+    @RequestMapping("/getsession2")
+    public String getSession2(@SessionAttribute(value = "userinfo",
+            required = false) String userinfo) {
+        return "Session是" + userinfo;
+    }
+
+    // Servlet获取header, ua is user agent
+    @RequestMapping("/getua")
+    public String getHeader(HttpServletRequest request) {
+        return "Header: " + request.getHeader("User-Agent"); // User-Agent是GET 请求里面的header名字。
+    }
+
+    // 用@RequestHeader来获取值
+    @RequestMapping("/getua2")
+    public String getHeader2(@RequestHeader("User-Agent") String userAgent) {
+        return "Header's User-Agent: " + userAgent;
+    }
+
+    // Servlet获取cookie
+    @RequestMapping("/cookie")
+    public void getCookie(HttpServletRequest request) {
+        // 得到全部cookie
+        Cookie[] cookies = request.getCookies();
+        for (Cookie c:cookies) {
+            log.info("Cookie Name: " + c.getName() +
+                    " | Cookie Value: " + c.getValue());
+        }
+    }
+    // 简洁地获取Cookie-用这个注解搞定@CookieValue("Cookie的value的名字") 放在bite这个变量里面
+    // 拿多个值
+    @RequestMapping("/cookie2")
+    public String cookie(@CookieValue("bite") String bite,
+                         @CookieValue("student") String student) {
+        return "cookie: " + bite;
+    }
 
     // 不能省略@RequestMapping，网页访问路径为：http://localhost:8080/user/sayhi
     @RequestMapping("/sayhi")
     @ResponseBody // 没有这个，表面返回的是静态页面。加了这行，返回的是非静态页面的数据
     public String sayHi() {
-        return "Hello, World!";
+        return "Hello, World! " + imgPath;
     }
 
     // 只支持post类型的访问方式
@@ -88,9 +161,23 @@ public class UserController {
     @RequestMapping("/upimg")
     public boolean upImg(Integer uid, @RequestPart("img") MultipartFile file) {
         boolean result = false;
+        // 1. 目录 ： 见这一行代码“@Value("${img.path}")”
+        // 2. 图片名称（图片名不能重复）[时间戳/UUID,时间戳不可取，并发的情况下，后面的会覆盖前面一个，使用UUID(universally unique identifier)]
+        /*String fileName = file.getOriginalFilename(); // 得到原图片的名称(xxx.png)
+        // fileName做截取
+        fileName = fileName.substring(fileName.lastIndexOf(".")); // 得到图片后缀(png)
+        fileName = UUID.randomUUID().toString() + fileName; // 此处得到一个独一无二的fileName*/
+        String fileName = file.getOriginalFilename(); // 得到原图片的名称（xxx.png）
+        fileName = fileName.substring(fileName.lastIndexOf(".")); // 得到图片后缀（png）
+        fileName = UUID.randomUUID().toString() + fileName;
+
+        // 3. 获取原上传图片的格式
+        //    日志的好处：根据不同的环境，写不同的配置文件。放在不同目录里面，只需要改一个参数
         // 保存图片到本地目录（此处本地电脑既是客户端又是服务器）
         try {
-            file.transferTo(new File("C:\\Users\\LuLu\\bit_github\\Java\\JavaSpring\\springmvcdemo\\img.png"));
+            // 这么写，会把路径名和图片名写死了，后上传的图片，将前面上传的图片给覆盖掉了
+             file.transferTo(new File("C:\\Users\\LuLu\\bit_github\\Java\\JavaSpring\\springmvcdemo\\img.png"));
+            // file.transferTo(new File(imgPath + fileName)); // 相比于上面一行，更加灵活，路径名不会写死
             result = true;
         } catch (IOException e) {
             log.error("上传图片失败。" + e.getMessage());

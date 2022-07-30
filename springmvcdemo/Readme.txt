@@ -55,3 +55,41 @@ Spring MVC 学习目标
 
 
 6   使用postman来上传文件
+
+7   扩充功能：不同运行平台的配置文件设置
+    Reference URL: https://www.baeldung.com/spring-yaml
+    1. 新建不同平台的配置文件。
+       application-dev.yml & application-prod.yml 分别对应的是开发环境和生产环境的文件。
+       命名规则：application-平台名称.yml （application-dev.yml  application-prod.yml  application-test.yml）
+    2. 在主配置文件（application.yml）中,设置运行的配置文件
+
+三种特殊的参数：
+Cookie
+Session(常见)，比如说，获取用户的浏览器信息，哪种浏览器用得比较多，主流浏览器是哪些。帮助优化。
+Header
+8   获取Cookie的方法
+    1. Servlet获取Cookie的方法
+    2. 使用@CookieValue
+
+9   获取header（请求头）的方法
+    1. 用Servlet
+    2. @RequestHeader("key"), User-Agent
+
+10  存储和获取session的方法，比cookie安全，因为无法模拟
+    10.1 session先存（Servlet和Spring MVC操作方式是一样的）
+    10.2 才能取
+        10.2.1 Servlet模式
+
+    备注：存了Session后，在Inspect的Application里面，会有JSESSIONID，value是服务器的talking 值
+    存储session见 setSession()
+
+@Controller 和@RequestMapping的情况下，返回的是静态页面的名称，而不是hello这个String
+验证：在resources->static->hello.html
+
+11. 返回一个非静态页面的数据
+    a) 使用@ResponseBody这个注解来完成
+        - 修饰类时，表示当前类中的所有方法，都会返回一个静态页面的数据
+        - 修饰方法是，表示当前方法返回的是一个非静态页面的数据
+
+    b) 更加简单的方法
+        使用@RestController 来代替@Controller 和 @ResponseBody

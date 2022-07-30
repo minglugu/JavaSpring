@@ -1,0 +1,10 @@
+# 此文件命名规则：以“application-”开头
+# 开发环境的配置文件
+
+# 图片保存的路径，自定义的配置,用“/”
+img:
+  path: C:/Users/Lulu/bit_github
+
+
+
+
