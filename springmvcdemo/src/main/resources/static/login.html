@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="js/jquery-1.9.1.min.js"></script>
+    <title>Document</title>
+    <script>
+        // ajax 提交的方法
+        function mysub() {
+            // 判断是否为空
+            // js操作，不用name，用id
+            // 拿组件(component) username和password
+            // not recommended var username = $("#username");
+            var username = jQuery("#username");
+            var password = jQuery("#password");
+
+            // 去空格trim
+            if(jQuery.trim(username.val()) == "") {
+                alert("Please enter the username");
+                // 光标重置到此元素,用户体验的优化
+                username.focus();
+                return;
+            }
+             if(jQuery.trim(password.val()) == "") {
+                alert("Please enter the password");
+                // 光标重置到此元素,用户体验的优化
+                password.focus();
+                return;
+            }
+            // 发送ajax请求
+            jQuery.ajax({
+                // 里面放的是JSON信息，URL，type，data和success(回调函数)
+                url:"/user/login3",
+                type:"POST",
+                // 需要同时设置contentType和JSON.stringify，才能把数据传送给后端
+                contentType:"application/json",
+                // 改成JSON字符串
+                data:JSON.stringify({"username":username.val(),
+                      "password":password.val()}), // 用JSON.stringify() 将JSON对象转字符串
+                success:function(result) {
+                    alert(JSON.stringify(result));
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div style="text-align: center;">
+    <h1>登录</h1>
+    用户：<input id="username">
+    <br>
+    密码：<input id="password" type="password">
+    <br>
+    <input type="button" value=" 提交 " onclick="mysub()" style="margin-top: 20px;margin-left: 50px;">
+</div>
+</body>
+</html>

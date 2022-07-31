@@ -4,6 +4,7 @@ import com.example.demo.model.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.UUID;
 
 @Slf4j
@@ -93,6 +95,59 @@ public class UserController {
     @ResponseBody // 没有这个，表面返回的是静态页面。加了这行，返回的是非静态页面的数据
     public String sayHi() {
         return "Hello, World! " + imgPath;
+    }
+
+    @RequestMapping("/login2")
+    public HashMap<String, Object> login2(String username, String password) {
+        HashMap<String, Object> result = new HashMap<>();
+        // Spring 的非空判断,haslength(), 判断非空和非null, 并且把username和password都固定成admin
+        int state = 200;
+        int data = -1; // 等于1，登录成功，否则登录失败
+        String msg = "未知错误"; // 错误提示信息
+        if(StringUtils.hasLength(username) && StringUtils.hasLength(password)) {
+            if (username.equals("admin") && password.equals("admin")) {
+                data = 1;
+                msg = "";
+            } else {
+                msg = "用户名或密码失败！";
+            }
+        } else { // 参数为空
+            msg = "非法参数";
+        }
+        result.put("state", state);
+        result.put("data", data);
+        result.put("msg", msg);
+        return result;
+    }
+
+    /**
+     * 获取前端的json数据
+     * @param userInfo
+     * @return
+     */
+    // 前端传递JSON给后端，后端使用JSON来接收，用@RequestBody，接收的是一个JSON字符串
+    @RequestMapping("/login3")
+    // 检查前后端的key值是否一直，此处是一致的
+    public HashMap<String, Object> login3(@RequestBody UserInfo userInfo) {
+        HashMap<String, Object> result = new HashMap<>();
+        // Spring 的非空判断,haslength(), 判断非空和非null, 并且把username和password都固定成admin
+        int state = 200;
+        int data = -1; // 等于1，登录成功，否则登录失败
+        String msg = "未知错误"; // 错误提示信息
+        if(StringUtils.hasLength(userInfo.getUserName()) && StringUtils.hasLength(userInfo.getPassword())) {
+            if (userInfo.getUserName().equals("admin") && userInfo.getPassword().equals("admin")) {
+                data = 1;
+                msg = "";
+            } else {
+                msg = "用户名或密码失败！";
+            }
+        } else { // 参数为空
+            msg = "非法参数";
+        }
+        result.put("state", state);
+        result.put("data", data);
+        result.put("msg", msg);
+        return result;
     }
 
     // 只支持post类型的访问方式

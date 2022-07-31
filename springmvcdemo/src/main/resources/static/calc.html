@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>计算器</title>
+</head>
+<body>
+    <!-- action是提交的表单，所以加上MVC的地址，比如说：http://localhost:8080/calc/sum-->
+    <!-- action 路径名/calc, calc.html文件名，以及在CalcController里面的RequestMapping里面的路由的名字，都保持一致-->
+<form action="/calc">
+        <h1>计算器</h1>
+        数字1：<input name="num1" type="text"><br>
+        数字2：<input name="num2" type="text"><br>
+        <input type="submit" value=" 点击相加 ">
+    </form>
+</body>
+</html>

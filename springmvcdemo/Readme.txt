@@ -93,3 +93,23 @@ Header
 
     b) 更加简单的方法
         使用@RestController 来代替@Controller 和 @ResponseBody
+
+12. CaclController的calc()中，所传的参数的num1和num2需要和calc.html前端页面的变量名是一致的
+
+13. <!-- action 路径名/calc, calc.html文件名，以及在CalcController里面的RequestMapping("/calc")里面的路由的名字，都保持一致-->
+    否则会出现mapping错误
+
+14. 热部署 automatic deployment
+
+15. 实现登录功能(login), frontend uses AJAX, backend will return JSON to the frontend
+
+16. 典型的错误：存在jQuery这个文件，但访问的时候，却有 status 404。 因为target文件夹下面，没有生成js。将target文件夹删除，重新启动。
+    用这种方法，清除缓存(cache)
+
+17. 前端传递JSON给后端，后端使用JSON来接收，用@RequestBody，接收的是一个JSON字符串
+    后端接受JSON数据的标准格式，见login3(@RequestBody 对象或参数)
+
+18. forward vs redirect(请求转发 vs 请求重定向)
+    return可以返回一个视图，还可以实现跳转，跳转的方式有两种：
+    forward是请求转发
+    redirect是请求重定向
