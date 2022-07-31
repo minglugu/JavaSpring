@@ -111,5 +111,5 @@ Header
 
 18. forward vs redirect(请求转发 vs 请求重定向)
     return可以返回一个视图，还可以实现跳转，跳转的方式有两种：
-    forward是请求转发
-    redirect是请求重定向
+    - forward是请求转发，实现方式一共有三个，见/fw，/fw1，/fw2
+    - redirect是请求重定向.Fiddler 抓包有2个。见/rd,
