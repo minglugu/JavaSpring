@@ -1,3 +1,5 @@
+官网的annotation：https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-requestmapping
+
 Spring MVC 项目创建：
     基于Spring Boot框架添加一个 Spring Web（它使用的就是Spring MVC）依赖，此时项目就变成了 Spring MVC项目
 
@@ -111,5 +113,7 @@ Header
 
 18. forward vs redirect(请求转发 vs 请求重定向)
     return可以返回一个视图，还可以实现跳转，跳转的方式有两种：
-    - forward是请求转发，实现方式一共有三个，见/fw，/fw1，/fw2
-    - redirect是请求重定向.Fiddler 抓包有2个。见/rd,
+    - forward是请求转发，实现方式一共有三个，见/fw，/fw1，/fw2，服务器端
+    - redirect是请求重定向.Fiddler 抓包有2个。见/rd, 客户端
+    URL: 英文。http://www.differencebetween.net/technology/difference-between-forward-and-redirect/
+    URL: 中文。https://juejin.cn/post/7121513633237958670

@@ -59,6 +59,13 @@ public class TestController {
     public String myRedirect() {
         return "redirect:/hello.html";
     }
+
+    // 方法二
+    @RequestMapping("/rd2")
+    public void myRedirect2(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/hello.html");
+    }
+
 }
 
 
