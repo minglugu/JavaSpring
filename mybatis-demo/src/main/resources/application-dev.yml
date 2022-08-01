@@ -1,0 +1,11 @@
+# 开发环境的配置文件
+# 配置数据库连接，需要配4项
+# 详见application-prod.yml文件
+spring:
+  datasource:
+    url: jbbc:mysql://127.0.0.1:3306/mycnblog?characterEncoding=utf8
+    username: root
+    password: 111111
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
