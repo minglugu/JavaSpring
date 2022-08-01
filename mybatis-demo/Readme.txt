@@ -78,5 +78,38 @@ insert into videoinfo(vid,title,url,uid) values(1,'java title','http://www.baidu
 2. 配置数据连接字符串和MyBatis(保存的XML的目录)
     配置MyBatis的XML保存路径：resources->新建mybatis文件夹, 写在application.yml里
 
-使用MyBatis的操作模式 操作数据库
+使用MyBatis的操作模式 操作数据库。模式：Interface(接口，用来定义方法声明，放在com.example.demo.mapper里面) + XXX.yml(实现接口中的方法)，生成数据库可以执行的SQL，并且执行SQL
+将结果映射到程序的对象中。
+1. 定义接口
 
+MyBatis在整个框架中的定位，框架交互流程图如下：
+             |----------------------------------------------------------|
+             |              后端                                         |
+             |                                                          |
+前端--Ajax JSON--> 控制器-------调用--> 服务层                              |
+     <--返回----- Controller<--返回-- Service                            |
+             |    (验证参数)          (组合接口)                           |
+             |                          |  返回                          |
+             |                      Mapper                              |
+             |    |-----------------------------------------------------|
+             |    |            |-->Interface---------|                  |
+             |    |  持久层     |                     |-->生成SQL----操作----> Database(数据库)
+             |    |  Mapper  --|                     |  调用JDBC <---返回---
+             |    |  (调用数据库)|-->.xml(实现接口)------|                  |
+             |    |-----------------------------------------------------|
+             |                                                          |
+             |----------------------------------------------------------|
+
+开启mybatis，打印logging日志，mybatis是基于JDBC的，最终生成mysql
+先运行，再刷新网页localhost/8080/user/getuserbyid?id=1，会在terminal里出现这个SQL的结果：
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@382c72a8] was not registered for synchronization because synchronization is not active
+2022-08-01 19:50:49.489  INFO 1036 --- [nio-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2022-08-01 19:50:49.709  INFO 1036 --- [nio-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+JDBC Connection [HikariProxyConnection@1735013940 wrapping com.mysql.cj.jdbc.ConnectionImpl@3b4f50f3] will not be managed by Spring
+==>  Preparing: select * from userinfo where id=1
+==> Parameters:
+<==    Columns: id, username, password, photo, createtime, updatetime, state
+<==        Row: 1, admin, admin, , 2021-12-06 17:10:48, 2021-12-06 17:10:48, 1
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@382c72a8]

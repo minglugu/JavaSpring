@@ -4,7 +4,7 @@
 # 编码格式：characterEncoding=utf8
 spring:
   datasource:
-    url: jbbc:mysql://127.0.0.1:3306/mycnblog?characterEncoding=utf8
+    url: jdbc:mysql://127.0.0.1:3306/mycnblog?characterEncoding=utf8
     username: root
     password: 111111
     driver-class-name: com.mysql.cj.jdbc.Driver

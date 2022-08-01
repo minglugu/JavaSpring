@@ -3,9 +3,22 @@
 # 详见application-prod.yml文件
 spring:
   datasource:
-    url: jbbc:mysql://127.0.0.1:3306/mycnblog?characterEncoding=utf8
+    # MyBatis生成SQL，再调用JDBC，所以url的格式写成这样
+    url: jdbc:mysql://127.0.0.1:3306/mycnblog?characterEncoding=utf8
     username: root
     password: 111111
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+# 打开MyBatis的一个执行的原始的sql，所以要开启MyBatis SQL的打印，看最后生成的sql是什么样
+# 日志默认的级别是info，打印的是debug，所以要设置成debug
+logging:
+  level:
+    com:
+      example:
+        demo: debug
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
