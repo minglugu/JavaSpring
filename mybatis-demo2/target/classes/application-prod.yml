@@ -1,0 +1,11 @@
+# 生产环境的配置文件
+# 配置数据库连接，需要配4项
+# 连接数据库的字符串是固定写法，一共4个(url, username, password, driver-class-name)
+# 编码格式：characterEncoding=utf8
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/mycnblog?characterEncoding=utf8
+    username: root
+    password: 111111
+    driver-class-name: com.mysql.cj.jdbc.Driver
+

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 要设置是实现接口的具体包名加类名, userMapper.xml和UserMapper的interface关联起来，目的是，要实现的接口是谁？-->
+<mapper namespace="com.example.demo.mapper.UserMapper">
+    <!-- 只是查询操作(不是增删查改操作), select, id是interface里面的方法名，和返回的类型(resultType，包名+类名),要写2个属性(id和resultType)-->
+    <select id="getUserById" resultType="com.example.demo.model.UserInfo">
+        <!-- 具体的sql query，id=${id} 或者 id=#{id} -->
+        select * from userinfo where id=${id}
+    </select>
+
+    <!--根据id，更新已经存在的用户名，update无需加返回值resultType,只需要方法名作为id即可，用#{}-->
+    <update id="update">
+        update userinfo set username=#{username} where id=#{id}
+    </update>
+
+    <!-- 根据id，删除用户-->
+    <delete id="delete">
+        delete from userinfo where id=#{id}
+    </delete>
+
+    <!-- 添加用户，返回受影响的行数-->
+    <!-- 拿到的值是object，如果获取里面的属性？直接用对象里面的属性名，注意此参数一定要和对象中的属性名是一致的。mybatis是自动获取-->
+    <insert id="add">
+        insert into userinfo(username, password, photo)
+        values(#{username},#{password},#{photo})
+    </insert>
+
+    <!--MyBatis添加用户，返回受影响的行数和自增id
+        useGeneratedKeys默认是false，如果要自增，那么设置成true
+        然后赋值到对象的哪个属性上
+    -->
+    <insert id="addGetId" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into userinfo(username, password, photo)
+        values(#{username},#{password},#{photo})
+    </insert>
+
+</mapper>
+<!--和Interface一样的名字，所以叫userMapper -->
+<!-- reference URL:
+https://mybatis.org/mybatis-3/sqlmap-xml.html#:~:text=select%20The%20select%20statement%20is%20one%20of%20the,update%20or%20delete%2C%20there%20are%20probably%20many%20selects.-->

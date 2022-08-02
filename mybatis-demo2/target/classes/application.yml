@@ -1,0 +1,8 @@
+# 当前运行的环境（配置文件）
+spring:
+  profiles:
+    active: dev
+
+# 配置mybatis xml 保存路径,在 resources/mybatis 创建所有表的xml文件
+mybatis:
+  mapper-locations: classpath:mybatis/**Mapper.xml
