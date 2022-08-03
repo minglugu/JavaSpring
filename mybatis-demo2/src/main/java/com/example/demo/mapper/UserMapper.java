@@ -4,9 +4,15 @@ import com.example.demo.model.UserInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 // 必须要加这个注解，从普通的interface。变成MyBatis的interface，用XML来实现。
 @Mapper
 public interface UserMapper {
+
+    //获取列表，根据创建的时间，进行倒序或正序
+    public List<UserInfo> getOrderList(@Param("order") String order);
+
 
     // or public UserInfo findUserById(), stick to one of it
     // get/add | find/save

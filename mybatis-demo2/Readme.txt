@@ -217,3 +217,21 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
     1. 定义不同：#{} 预处理，而${} 是直接替换；
     2. 使用不同：#{} 适用于所有类型的参数匹配，但 ${} 只适用于数值类型；
     3. 安全性不同：#{} 性能高，没有安全问题，但${} 存在sql 注入(injection)的安全问题。
+
+    ${} 使用场景，getOrderList()排序
+    <select id="getOrderList" resultType="com.example.demo.model.UserInfo">
+            select * from userinfo order by createtime #{order}
+    </select>
+
+    ==>  Preparing: select * from userinfo order by createtime desc
+    ==> Parameters:
+
+    #{} 传递SQL关键字(desc/asc)时，test有误(You have an error in your SQL syntax),因为不是个普通的value：
+    ==>  Preparing: select * from userinfo order by createtime ?
+    ==> Parameters: desc(String)
+
+    小结：当传递的是一个SQL关键字（SQL命令）的时候，只能使用${},此时如果使用#{}, 就会认为传递的为一个普通的值，而非SQL命令，
+    所以执行会报错。
+
+    当使用${}时，注意事项：
+    当必须使用时，那么一定要在业务代码中，对传递的值进行安全效验。

@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest // 表示当前单元测试运行在SpringBoot的环境中
@@ -81,5 +83,11 @@ class UserMapperTest {
     void getUserByFullName() {
         UserInfo userInfo = userMapper.getUserByFullName("zhaoliu");
         log.info("用户信息：" + userInfo);
+    }
+
+    @Test
+    void getOrderList() {
+        List<UserInfo> list = userMapper.getOrderList("desc");
+        log.info("列表：", list);
     }
 }
