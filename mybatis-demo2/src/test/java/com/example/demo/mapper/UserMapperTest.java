@@ -1,6 +1,7 @@
 package com.example.demo.mapper;
 
 import com.example.demo.model.UserInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +12,7 @@ import javax.annotation.Resource;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest // 表示当前单元测试运行在SpringBoot的环境中
+@Slf4j
 class UserMapperTest {
 
     // 属性注入(dependency injection),@Resource和@Autowired在社区版本的idea可以用，
@@ -22,7 +24,8 @@ class UserMapperTest {
     void getUserById() {
         UserInfo userInfo = userMapper.getUserById(1);
         // System.out.println(userInfo); // 这行只是打印，不是单元测试的表达式的执行
-        Assertions.assertNotNull(userInfo);
+        // Assertions.assertNotNull(userInfo);
+        log.info("用户信息：" + userInfo);
     }
 
     // 会改变数据库的值
@@ -60,7 +63,7 @@ class UserMapperTest {
     }
 
     @Test
-    // @Transactional // 万一有错误，不确定的情况下，看是否测试通过
+    @Transactional // 万一有错误，不确定的情况下，看是否测试通过
     void addGetId() {
         UserInfo userInfo = new UserInfo();
         userInfo.setUsername("zhaoliu");
@@ -72,5 +75,11 @@ class UserMapperTest {
         System.out.println("受影响的行数：" + result);
         System.out.println("添加之后的 user id：" + userInfo.getId());
         Assertions.assertEquals(1, result);
+    }
+
+    @Test
+    void getUserByFullName() {
+        UserInfo userInfo = userMapper.getUserByFullName("zhaoliu");
+        log.info("用户信息：" + userInfo);
     }
 }

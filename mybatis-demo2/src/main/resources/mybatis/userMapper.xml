@@ -5,7 +5,13 @@
     <!-- 只是查询操作(不是增删查改操作), select, id是interface里面的方法名，和返回的类型(resultType，包名+类名),要写2个属性(id和resultType)-->
     <select id="getUserById" resultType="com.example.demo.model.UserInfo">
         <!-- 具体的sql query，id=${id} 或者 id=#{id} -->
-        select * from userinfo where id=${id}
+        select * from userinfo where id=#{id}
+    </select>
+
+    <!-- 根据username来查询 name is unique-->
+    <select id="getUserByFullName" resultType="com.example.demo.model.UserInfo">
+        <!-- 具体的sql query，id=${id} 或者 id=#{id} -->
+        select * from userinfo where username=#{username}
     </select>
 
     <!--根据id，更新已经存在的用户名，update无需加返回值resultType,只需要方法名作为id即可，用#{}-->

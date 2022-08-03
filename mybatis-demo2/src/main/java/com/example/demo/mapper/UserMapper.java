@@ -14,6 +14,9 @@ public interface UserMapper {
     // @Param, 表明这个参数Integer id,在userMapper.xml,就叫id
     public UserInfo getUserById(@Param("id") Integer id);
 
+    // 根据username(same as field name in the table)来查询, and name is unique
+    public UserInfo getUserByFullName(@Param("username") String username);
+
     // update 修改方法{根据id修改名称}, @Param()里面的参数，是userMapper.xml里面的id
     public int update(@Param("id") Integer id,
                       @Param("username") String name);
