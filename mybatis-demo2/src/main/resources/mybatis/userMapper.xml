@@ -9,7 +9,7 @@
         <!--这么写id和result是有问题的，单表查询没问题，但是多表查询会有问题，在getUserById中，resultType替换成resultMap
         -->
         <id column="id" property="id"></id>
-        <!--普通属性映射-->
+        <!--普通属性映射, column是数据库里面的字段-->
         <result column="username" property="name"></result>
     </resultMap>
 

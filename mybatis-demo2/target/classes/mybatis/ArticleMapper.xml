@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 要设置是实现接口的具体包名加类名, userMapper.xml和UserMapper的interface关联起来，目的是，要实现的接口是谁？-->
+<mapper namespace="com.example.demo.mapper.ArticleMapper">
+    <resultMap id="getArticleById" type="com.example.demo.model.ArticleInfo">
+        <!--所有attributes都要做mapping,property是属性名-->
+        <id column="id" property="id"></id>
+        <result column="title" property="title"></result>
+        <result column="content" property="content"></result>
+        <result column="createtime" property="createtime"></result>
+        <result column="updatetime" property="updatetime"></result>
+        <result column="uid" property="uid"></result>
+        <result column="rcount" property="rcount"></result>
+        <result column="state" property="state"></result>
+        <!--username不是字段，无法映射-->
+
+    </resultMap>
+
+</mapper>
+        <!--和Interface一样的名字，所以叫userMapper -->
+        <!-- reference URL:
+        https://mybatis.org/mybatis-3/sqlmap-xml.html#:~:text=select%20The%20select%20statement%20is%20one%20of%20the,update%20or%20delete%2C%20there%20are%20probably%20many%20selects.-->

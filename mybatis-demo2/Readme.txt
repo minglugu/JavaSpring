@@ -314,6 +314,8 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
 16. 上面是one to one的表的mapping，下面来将one to many的关系（多表查询）
     one to one: 个人博客的文章，对应了一个作者
     one to many: 一个用户可以发表多篇文章
+    - 表名都小写
+    MyBatis一对一查询，<resultMap>,<association property="attribute对应的是另外一个表里面的对象">
 
 
 
