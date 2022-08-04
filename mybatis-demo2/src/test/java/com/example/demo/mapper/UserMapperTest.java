@@ -90,4 +90,28 @@ class UserMapperTest {
         List<UserInfo> list = userMapper.getOrderList("desc");
         log.info("列表：", list);
     }
+
+    @Test
+    void getAllBySort() {
+        List<UserInfo> list = userMapper.getAllBySort("asc");
+        log.info("列表为：" + list);
+    }
+
+    @Test
+    void isLogin() {
+        String username = "admin";
+        // 在mySQL里面，会将密码转换成这样：select * from userinfo where username='admin' and password='' or 1='1'
+        // mySQL里面 1='1'是true。可以在mySQL的数据库演示，输入select 1='1'; 得到的结果是 1.
+        // 后果是虽然密码出错，但是用户的信息会显示出来。这样用户信息就被泄露
+        String password = "' or 1='1"; // 比较奇怪的密码：' or 1='1，对数据进行了分割
+        UserInfo userInfo = userMapper.isLogin(username, password);
+        log.info("用户信息：" + userInfo);
+    }
+
+    @Test
+    void getListByName() {
+        String username = "a";
+        List<UserInfo> list = userMapper.getListByName(username);
+        log.info("用户列表：" + list);
+    }
 }

@@ -8,8 +8,29 @@
         select * from userinfo where id=#{id}
     </select>
 
+    <!--使用升序或降序来排序，需要用${}parameter notation。#{}是不能实现排序查询的。因为当使用#{}查询时，如果传递的
+    值为String（asc/desc），则会加单引号，而asc/desc是关键字，无需引号，这样就会导致SQL 的syntax错误-->
     <select id="getOrderList" resultType="com.example.demo.model.UserInfo">
-        select * from userinfo order by createtime #{order}
+        select * from userinfo order by createtime ${order}
+    </select>
+
+    <!-- 使用${}时，解决非数值类型的报错问题：'${name}',但会出现SQL injection的问题
+        SQL注入的example-->
+    <select id="isLogin" resultType="com.example.demo.model.UserInfo">
+        select * from userinfo where username='${name}' and password='${pwd}'
+    </select>
+
+    <!-- 使用like查询，用#{}会报错，但也不能直接使用${}。可以考虑使用mysql的内置函数concat()来处理。
+        select * from userinfo where username like '%#{username}%' 在sql里面相当于
+        select * from userinfo where username like '%'username'%'-->
+    <select id="getListByName" resultType="com.example.demo.model.UserInfo">
+        select * from userinfo where username like '%#{username}%'
+    </select>
+
+    <!--使用升序或降序来排序，需要用${}parameter notation。#{}是不能实现排序查询的。因为当使用#{}查询时，如果传递的
+        值为String（asc/desc），则会加单引号，而asc/desc是关键字，无需引号，这样就会导致SQL 的syntax错误-->
+    <select id="getAllBySort" parameterType="java.lang.String" resultType="com.example.demo.model.UserInfo">
+        select * from userinfo order by id ${sort}
     </select>
 
     <!-- 根据username来查询 name is unique-->

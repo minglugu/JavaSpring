@@ -230,8 +230,21 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
     ==>  Preparing: select * from userinfo order by createtime ?
     ==> Parameters: desc(String)
 
-    小结：当传递的是一个SQL关键字（SQL命令）的时候，只能使用${},此时如果使用#{}, 就会认为传递的为一个普通的值，而非SQL命令，
+    小结：当传递的是一个SQL关键字（SQL指令，e.g. desc/asc）的时候，只能使用${},此时如果使用#{}, 就会认为传递的为一个普通的值，而非SQL命令，
     所以执行会报错。
-
     当使用${}时，注意事项：
     当必须使用时，那么一定要在业务代码中，对传递的值进行安全效验。
+
+13. SQL注入问题演示：${}
+    见@Test isLogin()
+    password='' or 1='1'
+    如果改成#{}，那么就返回null，不存在这个安全问题。
+
+14. 特殊的like查询
+    like 使用#{}会报错，但也不能直接使用${},可以考虑使用mysql的内置函数concat()来处理。
+    举例：在userMapper.xml文件里,输入 select * from userinfo where username like '%#{username}%';
+    在@Test getListByName()执行后，sql为Preparing: select * from userinfo where username like '%?%'
+    ?是String类型的，预处理时，会加一个''，最后在@Test里面，SQL为select * from userinfo where username like '%'a'%'
+    错误提示为：nested exception is org.apache.ibatis.type.TypeException: Could not set parameters for mapping: ParameterMapping{property='username', mode=IN, javaType=class java.lang.Object, jdbcType=null, numericScale=null, resultMapId='null', jdbcTypeName='null', expression='null'}.
+    另外，在MySQL里面执行的结果为You have an error in your SQL syntax。
+

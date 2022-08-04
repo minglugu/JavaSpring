@@ -10,9 +10,18 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
-    //获取列表，根据创建的时间，进行倒序或正序
+    // 根据名称，模糊查询
+    public List<UserInfo> getListByName(@Param("username") String username);
+
+    //登录功能，来演示SQL injection
+    public UserInfo isLogin(@Param("name") String username,
+                            @Param("pwd") String password);
+
+    //获取列表，根据创建的时间(createtime)，进行倒序或正序
     public List<UserInfo> getOrderList(@Param("order") String order);
 
+    // sort by id using ${}
+    public List<UserInfo> getAllBySort(@Param("sort") String order);
 
     // or public UserInfo findUserById(), stick to one of it
     // get/add | find/save
