@@ -248,3 +248,72 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
     错误提示为：nested exception is org.apache.ibatis.type.TypeException: Could not set parameters for mapping: ParameterMapping{property='username', mode=IN, javaType=class java.lang.Object, jdbcType=null, numericScale=null, resultMapId='null', jdbcTypeName='null', expression='null'}.
     另外，在MySQL里面执行的结果为You have an error in your SQL syntax。
 
+    使用#{}会报错，但可以用${},在业务层的值，又不能穷举。无法对参数进行校验。
+    在MySQL里面，用concat SQL来验证：select concat('zhang','san');
+    会返回zhangsan
+    select concat('zhang','san') as username;
+    得到zhangsan为username。
+
+    select * from userinfo where username like concat('%',#{username},'%')
+    ==>  Preparing: select * from userinfo where username like concat('%',?,'%')
+    ==> Parameters: a(String)
+    <==    Columns: id, username, password, photo, createtime, updatetime, state
+    <==        Row: 1, admin, admin, , 2021-12-06 17:10:48, 2021-12-06 17:10:48, 1
+    <==      Total: 1
+
+15. resultType vs resultMap
+    返回类型：resultType
+    绝大多数查询场景可以使用resultType进行返回，代码如下：
+    <select id="getListByName" resultType="com.example.demo.model.UserInfo">
+        select * from userinfo where username like concat('%',#{username},'%')
+    </select>
+    有点是使用方便，直接定义到某个实体类就可以。
+
+    返回字典映射：resultMap
+    使用场景：
+    1. 字段(field)名称和程序中的属性名(attribute)不同的情况下,可以使用resultMap配置映射
+    2. 一对一和一对多关系，可以使用resultMap映射并查询数据。
+    使用desc userinfo;
+    就可以看到
+    +------------+--------------+------+-----+-------------------+-------------------+
+    | Field      | Type         | Null | Key | Default           | Extra             |
+    +------------+--------------+------+-----+-------------------+-------------------+
+    | id         | int(11)      | NO   | PRI | NULL              | auto_increment    |
+    | username   | varchar(100) | NO   |     | NULL              |                   |
+    | password   | varchar(32)  | NO   |     | NULL              |                   |
+    | photo      | varchar(500) | YES  |     |                   |                   |
+    | createtime | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
+    | updatetime | datetime     | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
+    | state      | int(11)      | YES  |     | 1                 |                   |
+    +------------+--------------+------+-----+-------------------+-------------------+
+
+    然而在UserInfo的Object中，attribute的名字和field名字不一致。
+    在测试@Test void getUserById()时，name=null,因为数据库是username，object里面是name，所以找不到，是null。结果如下：
+    用户信息：UserInfo(id=1, name=null, password=admin, photo=, createtime=2021-12-06 17:10:48, updatetime=2021-12-06 17:10:48, state=1)
+
+    怎么解决？用resultMap
+    reference URL: https://www.tutorialspoint.com/ibatis/ibatis_result_maps.htm
+    1. 先定义resultMap。其中id=”BaseMap“，用Upper Case Camel取名，此名字用于”2.“中的resultMap的名字
+    <resultMap id="BaseMap" type="com.example.demo.model.UserInfo">
+        <!--主键映射，column这里，表示数据库里面，字段的名字。property表示程序中对象的属性-->
+        <id column="id" property="id"></id>
+        <!--普通属性映射-->
+        <result column="username" property="name"></result>
+    </resultMap>
+
+    2. 然后在userMapper.xml里面，getUserById
+    <!--将resultType改成resultMap-->
+        <select id="getUserById" resultMap="BaseMap">
+    <!-- 具体的sql query，id=${id} 或者 id=#{id} -->
+            select * from userinfo where id=#{id}
+        </select>
+
+    2. 在@Test void getUserById()中，得到的结果为，注意返回值里面，
+    用户信息：UserInfo(id=1, name=admin, password=admin, photo=, createtime=2021-12-06 17:10:48, updatetime=2021-12-06 17:10:48, state=1)
+
+16. 上面是one to one的表的mapping，下面来将one to many的关系（多表查询）
+    one to one: 个人博客的文章，对应了一个作者
+    one to many: 一个用户可以发表多篇文章
+
+
+

@@ -10,7 +10,7 @@ import lombok.Data;
 public class UserInfo {
     // attributes和表格里面的fields是一样的
     private Integer id;
-    private String username;
+    private String name;
     private String password;
     private String photo;
     private String createtime;

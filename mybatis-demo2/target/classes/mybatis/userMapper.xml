@@ -2,8 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- namespace 要设置是实现接口的具体包名加类名, userMapper.xml和UserMapper的interface关联起来，目的是，要实现的接口是谁？-->
 <mapper namespace="com.example.demo.mapper.UserMapper">
+    <!--resultMap的使用场景：field(e.g. username) in database is not the same as attribute(name) in object
+    给id取名，用Upper Camel Case-->
+    <resultMap id="BaseMap" type="com.example.demo.model.UserInfo">
+        <!--主键映射,要写两个值，column是表里面的field，映射的属性(property)是object里面的属性-->
+        <!--这么写id和result是有问题的，单表查询没问题，但是多表查询会有问题，在getUserById中，resultType替换成resultMap
+        -->
+        <id column="id" property="id"></id>
+        <!--普通属性映射-->
+        <result column="username" property="name"></result>
+    </resultMap>
+
     <!-- 只是查询操作(不是增删查改操作), select, id是interface里面的方法名，和返回的类型(resultType，包名+类名),要写2个属性(id和resultType)-->
-    <select id="getUserById" resultType="com.example.demo.model.UserInfo">
+    <!--将resultType改成resultMap-->
+    <select id="getUserById" resultMap="BaseMap">
         <!-- 具体的sql query，id=${id} 或者 id=#{id} -->
         select * from userinfo where id=#{id}
     </select>
@@ -22,9 +34,10 @@
 
     <!-- 使用like查询，用#{}会报错，但也不能直接使用${}。可以考虑使用mysql的内置函数concat()来处理。
         select * from userinfo where username like '%#{username}%' 在sql里面相当于
-        select * from userinfo where username like '%'username'%'-->
+        select * from userinfo where username like '%'username'%'
+        也不能替换成${},因为会有注入风险-->
     <select id="getListByName" resultType="com.example.demo.model.UserInfo">
-        select * from userinfo where username like '%#{username}%'
+        select * from userinfo where username like concat('%',#{username},'%')
     </select>
 
     <!--使用升序或降序来排序，需要用${}parameter notation。#{}是不能实现排序查询的。因为当使用#{}查询时，如果传递的

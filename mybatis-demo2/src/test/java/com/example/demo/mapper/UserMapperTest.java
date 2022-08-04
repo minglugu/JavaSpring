@@ -56,7 +56,7 @@ class UserMapperTest {
     @Transactional
     void add() {
         UserInfo userInfo = new UserInfo();
-        userInfo.setUsername("wangwu");
+        userInfo.setName("wangwu");
         userInfo.setPassword("354");
         userInfo.setPhoto("default.png");
         int result = userMapper.add(userInfo);
@@ -68,7 +68,7 @@ class UserMapperTest {
     @Transactional // 万一有错误，不确定的情况下，看是否测试通过
     void addGetId() {
         UserInfo userInfo = new UserInfo();
-        userInfo.setUsername("zhaoliu");
+        userInfo.setName("zhaoliu");
         userInfo.setPassword("354d");
         userInfo.setPhoto("default1.png");
         // inner db id值不回滚
