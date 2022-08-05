@@ -11,7 +11,22 @@
         <id column="id" property="id"></id>
         <!--普通属性映射, column是数据库里面的字段-->
         <result column="username" property="name"></result>
+        <result column="password" property="password"></result>
+        <result column="photo" property="photo"></result>
+        <result column="createtime" property="createtime"></result>
+        <result column="updatetime" property="updatetime"></result>
+        <result column="state" property="state"></result>
+        <collection property="artList"
+                    resultMap="com.example.demo.mapper.ArticleMapper.BaseMap"
+                    columnPrefix="a_">
+        </collection>
     </resultMap>
+
+    <!--userinfo为主表. 两表还是有相同字段，那么会发生数据覆盖，需要在resultMap里面，加<collection>-->
+    <select id="getUserAndArticleByUid" resultMap="BaseMap">
+        select u.*, a.id a_id, a.title a_title, a.content a_content, a.createtime a_createtime, a.updatetime a_updatetime
+        from userinfo u left join articleinfo a on u.id=a.uid where u.id=#{uid}
+    </select>
 
     <!-- 只是查询操作(不是增删查改操作), select, id是interface里面的方法名，和返回的类型(resultType，包名+类名),要写2个属性(id和resultType)-->
     <!--将resultType改成resultMap-->
@@ -78,7 +93,32 @@
         values(#{username},#{password},#{photo})
     </insert>
 
-    <!--对个人博客的排序-->
+    <!--photo有时候有，有时候没有，是非必传参数，需要if来处理。
+        在test里面，直接写对象的属性名.
+        !=null 拼接
+        ==null
+        添加用户。添加时，photo是非必穿参数。
+        第一个username是字段名
+        第二个#{username}是对象里的属性的名字，所以要改成name-->
+    <!--1. 当photo传值的时候，生成的sql是
+        ==>  Preparing: insert into userinfo(username, password ,photo ) values(?,? ,? )
+        ==> Parameters: zhangdan(String), 123(String), 123.png(String)
+        <==    Updates: 1
+        2. 当photo不传值时，生成的sql是
+        ==>  Preparing: insert into userinfo(username, password ) values(?,? )
+        ==> Parameters: lisi(String), 654(String)
+        -->
+    <insert id="add2">
+        insert into userinfo(username, password
+        <if test="photo!=null">
+            ,photo
+        </if>
+        ) values(#{name},#{password}
+        <if test="photo!=null">
+            ,#{photo}
+        </if>
+        )
+    </insert>
 
 
 </mapper>

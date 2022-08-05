@@ -71,6 +71,9 @@ insert into articleinfo(title,content,uid)
 -- 添加视频
 insert into videoinfo(vid,title,url,uid) values(1,'java title','http://www.baidu.com',1);
 
+常用的sql: use 数据库名字
+          show tables
+          desc tablename
 
 1.  添加MyBatis的相关依赖(Dependency): MySQL Driver and MyBatis Framework
     以及yml文件
@@ -315,7 +318,56 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
     one to one: 个人博客的文章，对应了一个作者
     one to many: 一个用户可以发表多篇文章
     - 表名都小写
-    MyBatis一对一查询，<resultMap>,<association property="attribute对应的是另外一个表里面的对象">
+    MyBatis一对一查询，<resultMap>,<association property="此处是attribute，对应的是另外一个表里面的对象">
+
+    多表的一对一查询，步骤如下：
+    1. ArticleInfo class里，建ArticleInfo的对象+属性，包含UserInfo这个属性
+    2. ArticleMapper.xml文件里，要设置resultMap，包含<association>tag,用来实现一对一的关联查询。
+       查询的是2张表：select a.*,u.* from ..
+    3. 在<association>里面，配置resultMap=...UserMapper.BaseMap的信息，所以在UserMapper里面，也要有resultMap。
+
+    更详细的说明：如果<select..>中sql query这么写：select * from userinfo where id=#{id},userinfo出来的结果是不对的。
+    因为userinfo和articleinfo里面的字段重名，userinfo里面，字段显示的信息，来自于articleinfo表中。
+    如何验证？
+    将userinfo的id改成2， articleinfo的uid=2。（update userinfo set id=2;）
+    那么在test结果里面，会出现这样的结果
+    userInfo=UserInfo(id=1, name=admin, password=admin, photo=, createtime=2022-08-01 16:14:02, updatetime=2022-08-01 16:14:02, state=1))
+    id=1.
+    原因：如果两个表，里面有相同字段，那么后一个表的相同字段，被前面表里的相同字段值覆盖。
+    怎么解决？设置前缀<columnPrefix="u_"> 随便命名个前缀.用来解决多表中，相同字段数据覆盖的问题
 
 
 
+17. 如果在ArticleMapper.xml文件里，写select，如下
+    <select id="getArticleById" resultType="com.example.demo.model.ArticleInfo">
+            select * from articleinfo where id=#{id}
+    </select>
+    那么在ArticleMapperTest里，虽然test能够pass，但是也会出现userInfo为null。
+    文章的详情：ArticleInfo(id=1, title=Java, content=Java??, createtime=2022-08-01 16:14:02, updatetime=2022-08-01 16:14:02, uid=1, rcount=1, state=1, userInfo=null)
+    为什么是null？
+    一对一的多表联查/field和property不一样的名字，不能用resultType
+
+    sql：select a.*, u.*... (alias, 给表取的别名)
+
+18. 一对多实现：
+    一个用户发多篇文章
+    <collection>标签
+    <collection property="artlist"          // property：对象中的属性名
+                resultMap="com.example.demo.mapper.ArticleMapper.BaseMap"   // 映射对象所对应的字典
+                columnPrefix="a_">          // columbPrefix，不要省略，解决了多张表中，相同字段查询数据会被覆盖的问题
+
+19. MyBatis的动态SQL
+    if
+    choose (when, otherwise)
+    trim (where, set)
+    foreach
+    <if> 标签
+    非必传参数（比如说注册用户是，用户性别无需填写）
+    注册分为两种字段：必填字段和非必填字段，那如果在添加用户的时候，有不确定的字段传入，程序应该如何实现呢？
+    这个时候，就需要使用动态标签<if>来判断了，比如添加的时候，性别gender为非必填字段。
+    <if>标签用来动态判断，参数是否有值，如果没有值，那么隐藏if里面的数据，进行隐藏。sql里面就没有这个字段名。
+    非常重要的语法
+    语法：test的表达式，来进行判断
+        <if test=”username != null“>        表达式：username的参数是否为空，
+            username=#{username}                  如果结果为true，那么拼接的SQL就会加上username=#{username}，
+        </if>                                     如果结果为false，那么if标签中的sql就会忽略。

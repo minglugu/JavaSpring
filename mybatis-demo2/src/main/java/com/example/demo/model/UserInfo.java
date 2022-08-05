@@ -2,6 +2,8 @@ package com.example.demo.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * model文件夹下面，是普通实体类，无需加5大类注解
  */
@@ -16,4 +18,7 @@ public class UserInfo {
     private String createtime;
     private String updatetime;
     private int state;
+    // 一对多，一个用户，对应多篇文章
+    private List<ArticleInfo> artList;
+
 }

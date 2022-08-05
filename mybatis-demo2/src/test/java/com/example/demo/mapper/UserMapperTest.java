@@ -114,4 +114,19 @@ class UserMapperTest {
         List<UserInfo> list = userMapper.getListByName(username);
         log.info("用户列表：" + list);
     }
+
+    @Test
+    void getUserAndArticleByUid() {
+        UserInfo userInfo = userMapper.getUserAndArticleByUid(2);
+        log.info("用户文章：" + userInfo);
+    }
+
+    @Test
+    void add2() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setName("lisi");
+        userInfo.setPassword("654");
+        int result = userMapper.add2(userInfo);
+        log.info("添加用户的结果：" + result);
+    }
 }

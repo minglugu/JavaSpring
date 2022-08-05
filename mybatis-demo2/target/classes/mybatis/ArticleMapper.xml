@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- namespace 要设置是实现接口的具体包名加类名, userMapper.xml和UserMapper的interface关联起来，目的是，要实现的接口是谁？-->
+<!-- namespace 要设置是实现接口的具体包名加类名, ArticleMapper.xml和ArticleMapper这个interface关联起来，目的是，要实现的接口是谁，
+    就写谁的名字-->
 <mapper namespace="com.example.demo.mapper.ArticleMapper">
-    <resultMap id="getArticleById" type="com.example.demo.model.ArticleInfo">
-        <!--所有attributes都要做mapping,property是属性名-->
+    <!-- 直接写BaseMap，不用担心重名的问题，因为是调用当前xml的文件。如果调用其它BaseMap，那么就把package的名字给加上
+    BaseMap给ArticleInfo来做映射的-->
+    <resultMap id="BaseMap" type="com.example.demo.model.ArticleInfo">
+        <!--所有attributes都要做mapping,column是数据库里的field，property是对象的属性名-->
         <id column="id" property="id"></id>
+
+        <!--所有字段都要做mapping-->
         <result column="title" property="title"></result>
         <result column="content" property="content"></result>
         <result column="createtime" property="createtime"></result>
@@ -12,9 +17,25 @@
         <result column="uid" property="uid"></result>
         <result column="rcount" property="rcount"></result>
         <result column="state" property="state"></result>
-        <!--username不是字段，无法映射-->
-
+        <!--userInfo不是字段，无法映射,需要用到<association>,用于关联隐射
+        在ArticleMapper里面的property属性名userInfo,关联的对象是谁，用resultMap来映射-->
+        <association property="userInfo"
+                     resultMap="com.example.demo.mapper.UserMapper.BaseMap"
+                     columnPrefix="u_"></association>
     </resultMap>
+
+
+    <select id="getArticleById" resultMap="BaseMap">
+        <!--写a.id=#{id} 表明是article表里面的id。但是如果没有<association>的时候，userInfo还是null -->
+        <!--两表出现相同字段：可以加columnPrefix="u_", query这么写：
+        select a.*,u.username u_username from articleinfo a left join userinfo u on a.uid=u.id
+        where a.id=#{id}
+        数据库命名都小写，因为linux服务器的缘故-->
+        select a.*,u.id u_id, u.username u_username, u.password u_password from articleinfo a left join userinfo u on a.uid=u.id
+        where a.id=#{id}
+    </select>
+
+
 
 </mapper>
         <!--和Interface一样的名字，所以叫userMapper -->

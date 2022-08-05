@@ -29,6 +29,9 @@ public interface UserMapper {
     // @Param, 表明这个参数Integer id,在userMapper.xml,就叫id
     public UserInfo getUserById(@Param("id") Integer id);
 
+    // 根据用户id，查询用户以及该用户发表的所有文章
+    public UserInfo getUserAndArticleByUid(@Param("uid") Integer uid);
+
     // 根据username(same as field name in the table)来查询, and name is unique
     public UserInfo getUserByFullName(@Param("username") String username);
 
@@ -42,7 +45,10 @@ public interface UserMapper {
     // 添加用户，返回受影响的行数
     public int add(UserInfo userInfo);
 
+    // 添加用户。添加时，photo是非必穿参数。
+    public int add2(UserInfo userInfo);
+
     // MyBatis添加用户，返回受影响的行数和自增id，
     // 需要在xml里，设置两个属性:useGeneratedKeys（主键） 和keyProperty
-    public int addGetId(UserInfo userInfo);
+    public int addGetId(UserInfo userInfo); // 参数是一个对象，应该如何写？
 }
