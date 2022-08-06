@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -137,5 +138,27 @@ class UserMapperTest {
         userInfo.setPassword("354");
         int result = userMapper.add3(userInfo);
         log.info("添加用户的结果：" + result);
+    }
+
+    @Test
+    void update2() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(2);
+        userInfo.setName("admin");
+        userInfo.setPassword("123");
+        userInfo.setPhoto("default.png");
+        int result = userMapper.update2(userInfo);
+        log.info("update2 修改后的用户信息：" + result);
+    }
+
+    @Test
+    void delIds() {
+        List<Integer> list = new ArrayList<>();
+        list.add(15);
+        list.add(16);
+        list.add(17);
+        list.add(18);
+        int result = userMapper.delIds(list);
+        log.info("批量删除的结果：" + result);
     }
 }

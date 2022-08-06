@@ -35,7 +35,7 @@
         where a.id=#{id}
     </select>
 
-
+    <!--foreach标签的使用，批量删除-->
 
 </mapper>
         <!--和Interface一样的名字，所以叫userMapper -->

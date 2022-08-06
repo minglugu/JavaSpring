@@ -92,9 +92,37 @@
         update userinfo set username=#{username} where id=#{id}
     </update>
 
-    <!-- 根据id，删除用户-->
+    <!--用<set> tag-->
+    <update id="update2">
+        update userinfo
+        <set>
+            <if test="name!=null">
+                username=#{name},
+            </if>
+            <if test="password!=null">
+                password=#{password},
+            </if>
+            <if test="photo">
+                photo=#{photo},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!-- 根据单个id，删除用户-->
     <delete id="delete">
         delete from userinfo where id=#{id}
+    </delete>
+
+    <!--根据多个id，批量删除用户
+        item="id" 循环的时候，赋值一个变量名
+        separate="," 多个item之间用“，”-->
+    <delete id="delIds">
+        delete from userinfo where id in
+        <foreach collection="ids" open="("  close=")" item="id" separator=",">
+            <!--这里的id是item的id-->
+            #{id}
+        </foreach>
     </delete>
 
     <!-- 添加用户，返回受影响的行数-->

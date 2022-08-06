@@ -10,6 +10,11 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
+    int delIds(List<Integer> ids);
+
+    // 返回的是受影响的行数
+    public int update2(UserInfo userInfo);
+
     // 根据名称，模糊查询
     public List<UserInfo> getListByName(@Param("username") String username);
 

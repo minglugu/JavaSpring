@@ -392,3 +392,30 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
     主要作用：1. 实现查询中的where sql替换的，它可以实现如果没有任何的查询条件，那么它可以因此查询中的where sql，但如果存在查询条件，那么会生成
     where的sql查询；2. 并且使用where标签可以自动的去除最后一个and字符，格式为 and id=#{}。
     <where> 等于 <trim prefix="where" prefixOverrides="and">，所以<where>可以用后面的<trim>来替换
+
+    *** <set>标签
+    作用：进行修改操作时，配合 <if> 来处理非必传参数的，它的特点时会自动去除last comma。
+    syntax
+    update table_name
+        <set>
+            <if test="xxx!=null">
+                ...
+            </if>
+            <if test="xxx!=null">
+                ...
+            </if>
+        </set>
+        where id=#{id}
+
+    也可以使用<trim prefix="set" suffixOverrides=","> 替换
+
+    *** <foreach>标签，对集合进行循环。
+    对多个id，进行批量删除的功能。
+    对集合进行历遍时，可以使用该标签。<foreach>标签有如下属性：
+    - collection: 绑定方法参数中的集合，如List, Set, Map或数组对象
+    - item: 遍历时的每一个对象
+    - open: 语句块开头的字符串
+    - close: 语句块结束的字符串
+    - separator: 每次遍历之间间隔的字符串
+    示例：根据多个文章id 来删除文章数据
+
