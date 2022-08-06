@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客列表</title>
+    <link rel="stylesheet" href="css/conmmon.css">
+    <link rel="stylesheet" href="css/blog_list.css?v=1">
+    <script src="js/jquery.min.js"></script>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <div class="nav">
+        <img src="img/logo2.jpg" alt="">
+        <span class="title">我的博客系统</span>
+        <!-- 用来占据中间位置 -->
+        <span class="spacer"></span>
+        <a href="index.html">主页</a>
+        <a href="blog_add.html">写博客</a>
+        <a id="islogin" href="javascript:logout();">退出</a>
+        <!-- <a href="#">注销</a> -->
+    </div>
+    <!-- 版心 -->
+    <div class="container">
+        <!-- 左侧个人信息 -->
+        <div class="container-left">
+            <div class="card">
+                <img src="img/doge.jpg" class="avtar" alt="">
+                <h3 id="nickname"></h3>
+                <a href="http:www.github.com">github 地址</a>
+                <div class="counter">
+                    <span>文章</span>
+                </div>
+                <div class="counter">
+                    <span id="acount"></span>
+                </div>
+            </div>
+        </div>
+        <!-- 右侧内容详情 -->
+        <div id="artlist" class="container-right">
+            <div id="unart" style="text-align:center;display:none;">
+                <h3>当前用户未发表文章</h3>
+            </div>
+            <!-- 每一篇博客包含标题, 摘要, 时间 -->
+        </div>
+    </div>
+    <script>
+        var uid=0;
+        // 1.查询用户的信息
+        function myUserInfo(){
+            jQuery.ajax({
+                url:"loginUserInfo",
+                type:"GET",
+                success:function(result){
+                    if(result!=null && result.succ==200){
+                        // 前后端交互正常
+                        if(result.data!=null && result.data.uid>0){
+                            // 登录是正常
+                            jQuery("#nickname").text(result.data.nickname);
+                            uid = result.data.uid;
+                            // 查询用户的文章
+                            createArtList();
+                        }else{
+                            alert("抱歉：请先登录！");
+                            location.href = "login.html";
+                        }
+                    }else{
+                        alert("抱歉：后端程序不可用，请您稍后再试！");
+                    }
+                }
+            });    
+        }
+        myUserInfo();
+        // 2.得到用户的文章列表
+        function createArtList(){
+            jQuery.ajax({
+                url:"myartlist",
+                data:{"uid":uid},
+                type:"GET",
+                success:function(result){
+                    if(result!=null && result.succ==200){
+                        // 前后端交互正常
+                        var artlist = result.data;
+                        if(artlist!=null && artlist.length>0){
+                            jQuery("#acount").text(artlist.length);
+                            // 当前用户有发表的文章
+                            var artHtml='';
+                            for(var i=0;i<artlist.length;i++){
+                                var article = artlist[i];
+                                artHtml += '<div class="blog"><div class="title">'+
+                                article.title+'</div><div class="date">'+
+                                article.createtime+'</div><div class="desc">'+
+                                article.desc+'</div><div style="text-align:center;"><a href="blog_content.html?id='+
+                                article.aid+'" class="detail2">&nbsp;&nbsp;查看全文&nbsp;&nbsp;</a>&nbsp;&nbsp;&nbsp;<a style="color:darkgoldenrod;" href="blog_edit.html?aid='+
+                                article.aid+'" class="detail2">&nbsp;&nbsp;修 改&nbsp;&nbsp;</a>&nbsp;&nbsp;&nbsp;<a style="color:red;" href="javascript:del('+article.aid+');" class="detail2">&nbsp;&nbsp;删 除&nbsp;&nbsp</a></div></div><hr>';
+                            }
+                            jQuery("#artlist").html(artHtml);
+                        }else{
+                            // 当前用户未发表任何文章
+                            jQuery("#unart").show();
+                        }
+                    }else{
+                        alert("后端程序不可用！");
+                    }
+                }
+            });
+        };
+        // 退出事件
+        function logout(){
+            if(confirm("是否退出？")){
+                // 1.session 清空
+                jQuery.ajax({
+                    url:"logout",
+                    type:"POST",
+                    success:function(result){
+                        if(result!=null && result.succ==200 && result.data==1){
+                            // 退出成功
+                            alert("退出成功！");
+                            location.href = "login.html";
+                        }else{
+                            alert("抱歉：操作出错，请重试！");
+                        }
+                    }
+                });
+                // 2.跳转到登录或首页
+            }
+        }
+        // 删除文章
+        function del(aid){
+            if(confirm("是否确认删除？")){
+                if(aid!=null && aid>0){
+                    jQuery.ajax({
+                        url:"delart",
+                        type:"POST",
+                        data:{"aid":aid},
+                        success:function(result){
+                            if(result!=null && result.succ==200 &&
+                                result.data==1){
+                              alert("删除成功！");
+                              location.href = location.href;
+                            }else{
+                                alert("抱歉：操作失败，请重试！");
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

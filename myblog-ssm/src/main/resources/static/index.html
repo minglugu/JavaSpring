@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客列表</title>
+    <link rel="stylesheet" href="css/conmmon.css">
+    <link rel="stylesheet" href="css/blog_list.css">
+    <script src="js/jquery.min.js"></script>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <div class="nav">
+        <img src="img/logo2.jpg" alt="">
+        <span class="title">我的博客系统</span>
+        <!-- 用来占据中间位置 -->
+        <span class="spacer"></span>
+        <a href="index.html">主页</a>
+        <a href="blog_edit.html">写博客</a>
+        <a id="islogin" href="login.html">登陆</a>
+        <!-- <a href="#">注销</a> -->
+    </div>
+    <!-- 版心 -->
+    <div class="container">
+        <!-- 左侧个人信息 -->
+        <div class="container-left">
+           
+        </div>
+        <!-- 右侧内容详情 -->
+        <div class="container-right">
+            <div id="alist">
+                
+            </div>
+            <div id="pageDiv" style="text-align:center;padding-top:50px;padding-bottom:30px;">
+                <a href="javascript:lastPage();">上一页</a>
+                <a href="javascript:nextPage(0);">下一页</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 获取当前 url 中某个参数的方法
+        function getURLParam(key){
+            var params = location.search;
+            if(params.indexOf("?")>=0){
+                params = params.substring(1);
+                var paramArr = params.split('&');
+                for(var i=0;i<paramArr.length;i++){
+                    var namevalues = paramArr[i].split("=");
+                    if(namevalues[0]==key){
+                        return namevalues[1];
+                    }
+                }
+            }else{
+                return "";
+            }
+        }  
+        var currPage = getURLParam("cp")==""?1:getURLParam("cp"); // 当前页面
+        var pageSize = getURLParam("ps")==""?2:getURLParam("ps"); // 每页显示最大条数
+        // 上一页
+        function lastPage(){
+            if(currPage>1){
+                currPage--;
+            }else{ // 已经在首页
+                alert("当前已经是首页了！");
+                return;
+            }
+            location.href = "index.html?cp="+currPage+"&ps="+pageSize;
+        }
+        // 下一页
+        function nextPage(){
+            currPage++;
+            location.href = "index.html?cp="+currPage+"&ps="+pageSize;
+        }
+        // 请求后端查询列表
+        function loadList(){
+            jQuery.ajax({
+                url:"artlist",
+                type:"GET",
+                data:{"cp":currPage,"ps":pageSize},
+                success:function(result){
+                    if(result!=null && result.succ==200
+                        && result.data!=null && result.data.length>0){ // 查询到了文章
+                        var artListHtml = "";
+                        for(var i=0;i<result.data.length;i++){
+                            var article = result.data[i];
+                            artListHtml += '<div class="blog"><div class="title">'+article.title+'</div><div class="date">'+article.createtime+'</div><div class="desc">'+article.desc+'</div><a href="blog_content.html?id='+article.aid+'" class="detail">查看全文 &gt;&gt;</a></div><hr>';
+                        }
+                        jQuery("#alist").html(artListHtml);
+                    }else{
+                       jQuery("#alist").html("<h2 style='text-align:center;padding-top:50px;'>暂无文章，<a href='index.html'>返回</a></h2>"); 
+                       jQuery("#pageDiv").hide();
+                    }
+                }
+            });
+        }
+        loadList();
+    </script>
+</body>
+
+</html>

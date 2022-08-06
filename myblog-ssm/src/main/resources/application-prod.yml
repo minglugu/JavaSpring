@@ -1,0 +1,11 @@
+# 开发环境的配置文件
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/myblog2022?characterEncoding=utf8
+    usernameL: root
+    password: 111111
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# mybatis xml的保存路径
+mybatis:
+  mapper-locations: classpath:mapper/**Mapper.xml

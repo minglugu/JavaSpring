@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客正文</title>
+    <link rel="stylesheet" href="css/conmmon.css">
+    <link rel="stylesheet" href="css/blog_content.css">
+    <link rel="stylesheet" href="editor.md/css/editormd.preview.min.css" />
+    <script src="js/jquery.min.js"></script>
+    <script src="editor.md/editormd.js"></script>
+    <script src="editor.md/lib/marked.min.js"></script>
+    <script src="editor.md/lib/prettify.min.js"></script>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <div class="nav">
+        <img src="img/logo2.jpg" alt="">
+        <span class="title">我的博客系统</span>
+        <!-- 用来占据中间位置 -->
+        <span class="spacer"></span>
+        <a href="index.html">主页</a>
+        <a id="isedit" href="blog_add.html">写博客</a>
+        <a id="islogin" href="login.html">登陆</a>
+    </div>
+    <!-- 版心 -->
+    <div class="container">
+        <!-- 左侧个人信息 -->
+        <div class="container-left">
+            <div class="card">
+                <img src="img/doge.jpg" class="avtar" alt="">
+                <h3 id="username"></h3>
+                <a href="http:www.github.com">github 地址</a>
+                <div class="counter">
+                    <span>文章</span>
+                    <span>访问数</span>
+                </div>
+                <div class="counter">
+                    <span id="acount"></span>
+                    <span id="readcount"></span>
+                </div>
+            </div>
+        </div>
+        <!-- 右侧内容详情 -->
+        <div class="container-right">
+            <div class="blog-content">
+                <!-- 博客标题 -->
+                <h3 id="title"></h3>
+                <!-- 博客时间 -->
+                <div class="date"><span id="ctime"></span>
+                </div>
+                <!-- 博客正文 -->
+                <div id="context">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        // 获取当前 url 中某个参数的方法
+        function getURLParam(key){
+            var params = location.search;
+            if(params.indexOf("?")>=0){
+                params = params.substring(1);
+                var paramArr = params.split('&');
+                for(var i=0;i<paramArr.length;i++){
+                    var namevalues = paramArr[i].split("=");
+                    if(namevalues[0]==key){
+                        return namevalues[1];
+                    }
+                }
+            }else{
+                return "";
+            }
+        }    
+        // 1.先得到url中的文章id
+        var aid = getURLParam("id");
+        // aid 正确性和非空判断
+        if(aid==null || aid=="" && aid<=0){
+            alert("抱歉：访问失败，非法参数！");
+            // todo:调到转首页
+        }else{
+            // 1.加载文章
+            function loadArticle(){
+                // 2.请求后端得到文章详情并进行显示
+                jQuery.ajax({
+                    url:"artdetail",
+                    type:"POST",
+                    data:{"aid":aid},
+                    success:function(result){
+                        if(result!=null && result.succ==200){
+                            // 前后端通讯成功
+                            if(result.data!=null && result.data.aid>0){
+                                // 成功查询到详情
+                                jQuery("#title").text(result.data.title);
+                                jQuery("#ctime").text(result.data.createtime);
+                                jQuery("#readcount").text(result.data.readcount);
+                                // jQuery("#context").html(result.data.context);
+                                markdownToHtml(result.data.context);
+                            }else{
+                                alert("抱歉：当前文章不存在！");
+                            }
+                        }else{
+                            alert("抱歉：后端程序不可用！");
+                        }
+                    }
+                });
+            }
+            loadArticle();
+
+            // 2.加载个人信息
+            function loadUserInfo(){
+                // 2.请求后端查询用户的详情信息
+                jQuery.ajax({
+                    url:"getuserbyaid",
+                    type:"GET",
+                    data:{"aid":aid},
+                    success:function(result){
+                    if(result!=null && result.succ==200){
+                        // 前后端通讯正常
+                        if(result.data!=null && result.data.uid>0){
+                            jQuery("#username").text(result.data.username);
+                            jQuery("#acount").text(result.data.acount);
+                        }else{
+                            alert("抱歉：后端程序异常，"+result.msg);
+                        }
+                    }else{
+                        alert("后端程序不可用!");
+                    }
+                    }
+                });
+            }
+            loadUserInfo();
+
+            // 3.当前文章阅读量 +1
+            function addRCount(){
+                jQuery.ajax({
+                    url:"addrcount",
+                    type:"POST",
+                    data:{"aid":aid},
+                    success:function(result){
+                        if(result!=null && result.succ==200){
+                            console.log(result.data);   
+                        }else{
+                            alert("后端程序不可用！");
+                        }
+                    }
+                });   
+            }
+            addRCount();
+
+            // 判断是否为登录状态
+            function isLogin(){
+                jQuery.ajax({
+                    url:"loginUserInfo",
+                    type:"GET",
+                    success:function(result){
+                        if(result!=null && result.succ==200 && 
+                            result.data!=null && result.data.uid>0){
+                            // 登录状态
+                            jQuery("#isedit").attr("href","blog_add.html");
+                            jQuery("#islogin").text("退出");
+                            jQuery("#islogin").attr("href","javascript:logout()");    
+                        }else{
+                            // 非登录状态
+                            jQuery("#isedit").attr("href","login.html"); 
+                            jQuery("#islogin").text("登录");
+                            jQuery("#islogin").attr("href","login.html");
+                        }
+                    }
+                });
+            }
+            isLogin();
+            // 退出事件
+            function logout(){
+                if(confirm("是否退出？")){
+                    // 1.session 清空
+                    jQuery.ajax({
+                        url:"logout",
+                        type:"POST",
+                        success:function(result){
+                            if(result!=null && result.succ==200 && result.data==1){
+                                // 退出成功
+                                alert("退出成功！");
+                                // 当前页面进行刷新
+                                location.href = location.href;
+                            }else{
+                                alert("抱歉：操作出错，请重试！");
+                            }
+                        }
+                    });
+                    // 2.跳转到登录或首页
+                }
+            }
+        }
+        
+        // 将 Markdown 转换成 html
+        function markdownToHtml(md){
+            editormd.markdownToHTML("context", {
+                markdown : md, // Also, you can dynamic set Markdown text
+                // htmlDecode : true,  // Enable / disable HTML tag encode.
+                // htmlDecode : "style,script,iframe",  // Note: If enabled, you should filter some dangerous HTML tags for website security.
+            });
+        }
+    </script>
+</body>
+
+</html>
