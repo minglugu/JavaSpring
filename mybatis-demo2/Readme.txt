@@ -361,7 +361,8 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
     choose (when, otherwise)
     trim (where, set)
     foreach
-    <if> 标签
+
+    *** <if> 标签
     非必传参数（比如说注册用户是，用户性别无需填写）
     注册分为两种字段：必填字段和非必填字段，那如果在添加用户的时候，有不确定的字段传入，程序应该如何实现呢？
     这个时候，就需要使用动态标签<if>来判断了，比如添加的时候，性别gender为非必填字段。
@@ -371,3 +372,23 @@ Closing non transactional SqlSession [org.apache.ibatis.session.defaults.Default
         <if test=”username != null“>        表达式：username的参数是否为空，
             username=#{username}                  如果结果为true，那么拼接的SQL就会加上username=#{username}，
         </if>                                     如果结果为false，那么if标签中的sql就会忽略。
+
+    *** <trim>标签：配合<if>一起使用，去除sql语句前后多余的某个字符（任何）的。
+    如果所有字段都是非必填项，就考虑使用<trim>标签结合<if>标签，对多个字段都采取动态生成的方式。
+    <trim> 标签中有如下属性：
+    - prefix：表示整个语句块，以prefix的值作为前缀
+    - suffix：表示整个语句块，以suffix的值作为前缀
+    - prefixOverrides：表示整个语句块，要去除掉的前缀
+    - suffixOverrides：表示整个语句块，要去除掉的后缀
+    完整的语法：在trim之前，加(,结束后加),去除掉前面的"," , 去除掉后面的","
+    <trim prefix="(" suffix=")" prefixOverrides="," suffixOverrides=",">
+        <if test="xxx != null">
+            ...
+        </if>
+            ...
+    </trim>
+
+    *** <where>标签的特点及使用
+    主要作用：1. 实现查询中的where sql替换的，它可以实现如果没有任何的查询条件，那么它可以因此查询中的where sql，但如果存在查询条件，那么会生成
+    where的sql查询；2. 并且使用where标签可以自动的去除最后一个and字符，格式为 and id=#{}。
+    <where> 等于 <trim prefix="where" prefixOverrides="and">，所以<where>可以用后面的<trim>来替换

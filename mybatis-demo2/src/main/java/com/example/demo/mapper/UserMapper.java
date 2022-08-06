@@ -48,6 +48,10 @@ public interface UserMapper {
     // 添加用户。添加时，photo是非必穿参数。
     public int add2(UserInfo userInfo);
 
+    // 添加用户，其中username，password，photo都是非必传参数
+    // 但至少会传递一个参数
+    public int add3(UserInfo userInfo);
+
     // MyBatis添加用户，返回受影响的行数和自增id，
     // 需要在xml里，设置两个属性:useGeneratedKeys（主键） 和keyProperty
     public int addGetId(UserInfo userInfo); // 参数是一个对象，应该如何写？

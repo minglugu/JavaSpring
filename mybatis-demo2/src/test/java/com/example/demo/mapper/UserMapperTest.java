@@ -24,7 +24,7 @@ class UserMapperTest {
 
     @Test
     void getUserById() {
-        UserInfo userInfo = userMapper.getUserById(1);
+        UserInfo userInfo = userMapper.getUserById(2);
         // System.out.println(userInfo); // 这行只是打印，不是单元测试的表达式的执行
         // Assertions.assertNotNull(userInfo);
         log.info("用户信息：" + userInfo);
@@ -127,6 +127,15 @@ class UserMapperTest {
         userInfo.setName("lisi");
         userInfo.setPassword("654");
         int result = userMapper.add2(userInfo);
+        log.info("添加用户的结果：" + result);
+    }
+
+    @Test
+    void add3() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setName("wangwu");
+        userInfo.setPassword("354");
+        int result = userMapper.add3(userInfo);
         log.info("添加用户的结果：" + result);
     }
 }

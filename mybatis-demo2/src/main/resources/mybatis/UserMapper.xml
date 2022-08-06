@@ -31,8 +31,28 @@
     <!-- 只是查询操作(不是增删查改操作), select, id是interface里面的方法名，和返回的类型(resultType，包名+类名),要写2个属性(id和resultType)-->
     <!--将resultType改成resultMap-->
     <select id="getUserById" resultMap="BaseMap">
-        <!-- 具体的sql query，id=${id} 或者 id=#{id} -->
-        select * from userinfo where id=#{id}
+        <!-- 具体的sql query，id=${id} 或者 id=#{id}
+            在test里面，传了个null，那么sql生成为
+            ==>  Preparing: select * from userinfo
+            ==> Parameters:
+            表明，当where中的所有参数都为空，那么sql就不会生成有where的这个部分
+            -->
+        <!-- 在id前面加and，test里面在生成sql语句时，会自动去除，例子如下
+            Preparing: select * from userinfo WHERE id=?
+            ==> Parameters: 2(Integer)-->
+        <!--以下时标准的写法：在三种情境下，都时正确的，
+            1. 只传id，那么会去除and 标签
+            2. 只穿username，自动去除最后一个and
+            3. 同时传，那么时个标准的sql语句-->
+        select * from userinfo
+        <where>
+            <if test="id!=null">
+                id=#{id}
+            </if>
+            <if test="name!=null">
+                and username=#{name}
+            </if>
+        </where>
     </select>
 
     <!--使用升序或降序来排序，需要用${}parameter notation。#{}是不能实现排序查询的。因为当使用#{}查询时，如果传递的
@@ -120,7 +140,34 @@
         )
     </insert>
 
-
+    <!--之所以要加prefix="(" 和suffix=")" 是因为insert into userinfo(a,b,c) values(#{a}, #{b}, #{c})
+        name!=null中name是对象的属性，username(field)是表格中的column name-->
+    <insert id="add3">
+        insert into userinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                username,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="photo != null">
+                photo,
+            </if>
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="password!=null">
+                #{password},
+            </if>
+            <if test="photo">
+                #{photo},
+            </if>
+        </trim>
+    </insert>
 </mapper>
 <!--和Interface一样的名字，所以叫userMapper -->
 <!-- reference URL:
