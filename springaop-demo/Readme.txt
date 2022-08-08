@@ -20,3 +20,8 @@ Spring-AOP组成：
 	   @AfterThrowing		抛出异常之后的通知，错误日志，发送短信给业务/开发人员。
 	   @Around			环绕通知。执行的方法包起来，前后可以执行一些任务。
 	   规定了AOP，执行的时机和执行的方法。
+
+very detailed YouTube video for this topic:
+Java dynamic proxies
+https://www.youtube.com/watch?v=r43IH5Qhz_Q
+
