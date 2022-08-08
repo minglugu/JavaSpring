@@ -10,12 +10,14 @@ public class UserController {
     @RequestMapping("/sayhi")
     public String sayHi() {
         System.out.println("sayhi方法：被执行了！");
+        int num = 10/0;
         return "Hello world!";
     }
 
     @RequestMapping("/sayhello")
     public String sayHello() {
         System.out.println("say hello方法：被执行了！");
+
         return "你好，世界！";
     }
 }
