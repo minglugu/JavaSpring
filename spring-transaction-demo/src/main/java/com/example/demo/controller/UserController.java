@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +48,7 @@ public class UserController {
 
     //在此方法中，使用声明式的事务（Declarative transaction management）
     // 既可以修饰类也可以修饰方法。在进入方法之前，自动开启事务，在方法执行完之后，自动提交事务，如果出现异常，则自动进行回滚操作
-    @Transactional
+    @Transactional(isolation = Isolation.DEFAULT)
     @RequestMapping("/add2")
     public int add2(UserInfo userInfo) {
         // todo: 非空效验[验证用户名和密码 不为空]
