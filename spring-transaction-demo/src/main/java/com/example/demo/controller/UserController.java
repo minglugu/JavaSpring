@@ -8,6 +8,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +49,7 @@ public class UserController {
 
     //在此方法中，使用声明式的事务（Declarative transaction management）
     // 既可以修饰类也可以修饰方法。在进入方法之前，自动开启事务，在方法执行完之后，自动提交事务，如果出现异常，则自动进行回滚操作
-    @Transactional(isolation = Isolation.DEFAULT)
+    @Transactional // (timeout = 1)set 3s sleep in UserService, it will get TransactionTimedOutException.
     @RequestMapping("/add2")
     public int add2(UserInfo userInfo) {
         // todo: 非空效验[验证用户名和密码 不为空]
@@ -58,7 +59,28 @@ public class UserController {
         int result = userService.add(userInfo);
         System.out.println("add 受影响的行数：" + result);
 
-        // int num = 10/0; 此行代码是
+        // int num = 10/0; 此行代码是验证错误的
+
+        return result;
+    }
+
+    // 使用声明式事务
+    @Transactional // (timeout = 1)set 3s sleep in UserService, it will get TransactionTimedOutException.
+    @RequestMapping("/add3")
+    public int add3(UserInfo userInfo) {
+        // todo: 非空效验[验证用户名和密码 不为空]
+        if (userInfo == null || !StringUtils.hasLength(userInfo.getUsername())
+                || !StringUtils.hasLength(userInfo.getPassword())) return 0;
+
+        int result = userService.add(userInfo);
+        System.out.println("add 受影响的行数：" + result);
+
+        try {
+            int num = 10 / 0;
+        }catch (Exception e) {
+            // throw e; // 方法1
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
 
         return result;
     }
