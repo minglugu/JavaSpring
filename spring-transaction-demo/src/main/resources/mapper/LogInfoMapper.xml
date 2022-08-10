@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 要设置是实现接口的具体包名加类名, UserMapper.xml和UserMapper这个interface关联起来，目的是，要实现的接口是谁，
+    就写谁的名字-->
+<mapper namespace="com.example.demo.mapper.LogInfoMapper">
+
+    <insert id="add">
+        insert into loginfo(name, `desc`) values(#{name},#{desc})
+    </insert>
+</mapper>

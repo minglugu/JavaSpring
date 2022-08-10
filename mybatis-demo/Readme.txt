@@ -36,6 +36,19 @@ create table userinfo(
     `state` int default 1
 ) default charset 'utf8mb4';
 
+--新建创建日志的SQL query, 在desc加 ``
+drop table if exists loginfo;
+create table loginfo(id int primary key auto_increment, name varchar(100) not null, `desc` varchar(500) default '', createtime datetime default now()) default charset 'utf8mb4';
+
+-- 创建日志表 //创建表 有误
+drop table if exists loginfo;
+create table loginfo(
+    id int primary key auto_increment,
+    name varchar(250) not null,
+    `desc` text not null,
+    createtime datetime default now()
+)default charset 'utf8mb4';
+
 -- 创建文章表
 drop table if exists  articleinfo;
 create table articleinfo(

@@ -20,5 +20,8 @@ https://docs.microsoft.com/en-us/sql/t-sql/statements/set-transaction-isolation-
 https://juejin.cn/post/7114494161155260429
 面试突击61：事务隔离级别
 
+spring transaction management:
+docs.spring.io/spring-framework/docs/current/reference/html/data-access.html#transaction
 
-
+Spring Transaction Propagation in a Nutshell:
+https://dzone.com/articles/spring-transaction-propagation

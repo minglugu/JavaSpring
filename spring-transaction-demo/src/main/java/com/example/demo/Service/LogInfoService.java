@@ -1,9 +1,7 @@
 package com.example.demo.Service;
 
 import com.example.demo.mapper.LogInfoMapper;
-import com.example.demo.mapper.UserMapper;
 import com.example.demo.model.LogInfo;
-import com.example.demo.model.UserInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,23 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 
 @Service
-public class UserService {
-
-    @Resource
-    private UserMapper userMapper;
+public class LogInfoService {
 
     @Resource
     private LogInfoMapper logInfoMapper;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public int add(UserInfo userInfo) {
-/*
-        try {
-            Thread.sleep(3*1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
-        int result = userMapper.add(userInfo);
-        return result;
+    public int add(LogInfo logInfo){
+        int number = 10/0; // 此处让日志添加失败
+        return logInfoMapper.add(logInfo);
     }
 }

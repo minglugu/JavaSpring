@@ -1,12 +1,16 @@
 package com.example.demo.controller;
 
+import com.example.demo.Service.LogInfoService;
 import com.example.demo.Service.UserService;
+import com.example.demo.mapper.LogInfoMapper;
+import com.example.demo.model.LogInfo;
 import com.example.demo.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.StringUtils;
@@ -25,6 +29,12 @@ public class UserController {
 
     @Autowired
     private TransactionDefinition transactionDefinition;
+
+    @Autowired
+    private LogInfoService logInfoService;
+
+    @Autowired
+    private LogInfoMapper logInfoMapper;
 
     //在此方法中，使用编程式的事务（Programmatic transaction management）
     @RequestMapping("/add")
@@ -65,6 +75,7 @@ public class UserController {
     }
 
     // 使用声明式事务
+    // 事务传播机制(7种),设参数(propagation = Propagation. ...)
     @Transactional // (timeout = 1)set 3s sleep in UserService, it will get TransactionTimedOutException.
     @RequestMapping("/add3")
     public int add3(UserInfo userInfo) {
@@ -83,5 +94,23 @@ public class UserController {
         }
 
         return result;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @RequestMapping("/add4")
+    public int add4(UserInfo userInfo) {
+        if (userInfo == null ||
+                !StringUtils.hasLength(userInfo.getUsername()) ||
+                !StringUtils.hasLength(userInfo.getPassword())) {
+            return 0;
+        }
+        int userResult = userService.add(userInfo);
+        System.out.println("添加用户：" + userResult);
+        // 在LogInfoService里面添加日志
+        LogInfo logInfo = new LogInfo();
+        logInfo.setName("添加用户");
+        logInfo.setDesc("添加用户结果：" + userResult);
+        int logResult = logInfoService.add(logInfo);
+        return userResult;
     }
 }
